@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <!-- Declare a launch argument 'conf_file_path' with a default path to the sphero configuration JSON -->
+  <arg name="conf_file_path" default="$(find-pkg-share ros2_sphero_mini)/config/sphero_conf.json"/>  
+  <!-- Declare a launch argument 'mac_address' with the default Sphero device MAC address -->
+  <arg name="mac_address" default="E0:D2:31:6B:74:3C"/>  
+
+  <!-- Group nodes under the 'sphero' namespace -->
+  <group>
+    <push-ros-namespace namespace="sphero"/>                                     
+
+    <!-- Main Sphero control node -->
+    <node pkg="ros2_sphero_mini" exec="sphero_node" name="sphero" output="screen">
+      <!-- Provide the configuration file path parameter to the node -->
+      <param name="conf_file_path" value="$(var conf_file_path)"/>                                             
+      <!-- Provide the MAC address parameter to the node -->
+      <param name="mac_address" value="$(var mac_address)"/>
+    </node>
+
+    <!-- Marker tracking node -->
+    <node pkg="ros2_sphero_mini" exec="tracker" name="tracker" output="screen"/>  
+    <!-- GUI node -->
+    <node pkg="ros2_sphero_mini" exec="gui" name="gui" output="screen"/>  
+  </group>
+
+  <!-- Include an external camera launch file from the usb_cam package -->
+  <include file="$(find-pkg-share usb_cam)/launch/camera.launch.py"/>
+
+</launch>
