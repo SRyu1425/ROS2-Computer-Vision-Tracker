@@ -54,5 +54,8 @@ cd ~/ros2_ws && colcon build --packages-select ros2_sphero_mini
 
 source install/setup.bash
 
+## Demo
+The attched mp4 video files demonstrates both the tracking functionality with the GUI in view, as well as the manual teleoperation mode.
+
 ## References
 ROS1 Sphero Mini BLE Driver: cedricgoubard/sphero_mini
