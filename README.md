@@ -18,35 +18,19 @@ This project uses ROS 2 with a Tkinter GUI and OpenCV color‑tracking to contr
 **UI**: Tkinter event‑driven GUI integrated with rclpy via a background spin thread.
 
 ## High Level Architecture
-+--------------------+                   +--------------------+
-|  usb_cam (driver)  |  /camera1/image   |   tracker_node     |
-|  - MJPG/YUYV       +------------------->   (OpenCV HSV)     |
-|  - 30 FPS          |                   | - blob detect      |
-+---------+----------+                   | - centroid/bearing |
-          |                              | - P ctrl (velocity)|
-          |                              +----+-----+---------+
-          |                                   |     |
-          |                                   |     |
-          |                                   v     v
-          |                               /sphero/desired_yaw       (Int64)
-          |                               /sphero/desired_distance  (Int64)
-          |                               /sphero/desired_velocity  (Int64)
-          |                               /sphero/move_flag         (Int64)
-          v
-+---------------------+                 +---------------------------+
-|       gui           |  /GUI/*         |        sphero_node        |
-| (Tkinter + rclpy)   +----------------->  (ROS2 ↔ BLE bridge)      |
-| - joystick/D-pad    |                 | - autonomy/teleop modes   |
-| - RGB sliders       |                 | - roll/stab/reset/LED     |
-| - track/teleop btns |                 | - battery/firmware query  |
-+----------+----------+                 | - optional IMU stream*    |
-           |                            +-------------+-------------+
-           |                                          |
-           |                                          v
-           |                                     BLE (bluepy)
-           |                                Sphero Mini hardware
-           |
-           +--(background thread runs rclpy.spin; Tk mainloop on main thread)
+Camera -> Vision: A USB camera publishes frames; a vision node (OpenCV) detects robot/target colors, computes bearing + distance, and outputs simple motion intents.
+
+Operator UI -> Control: A Tkinter GUI publishes joystick/D‑pad commands, LED color, and mode toggles (Autonomy/Teleop, Stabilization, Reset Heading).
+
+Control Bridge: A ROS 2 node takes either the GUI commands (Teleop) or the tracking flag (Autonomy), applies control algorithms (e.g., heading offset, velocity cap), and decides what the robot should do next.
+
+Robot I/O (BLE): A thin driver encodes Sphero API packets over BLE to execute actions (roll, stabilization on/off, reset heading, LED) and fetch device status (battery, firmware).
+
+Launch & Namespacing: One launch file starts camera, vision, GUI, and control under a single namespace for topic organization.
+
+**Data Flow**
+Camera -> OpenCV -> Control -> BLE -> Sphero
+GUI -> Control -> BLE -> Sphero
 
 ## Quick Setup
 
@@ -55,12 +39,16 @@ sudo apt-get install ros-jazzy-usb-cam ros-jazzy-cv-bridge python3-tk python3-ve
 
 **BLE venv (bluepy)**
 mkdir -p ~/ros2_ble_ws && cd ~/ros2_ble_ws
+
 python3 -m venv venv && source venv/bin/activate
+
 pip install --upgrade pip bluepy opencv-python "numpy<2"
+
 touch venv/COLCON_IGNORE
 
 **Build package**
 cd ~/ros2_ws && colcon build --packages-select ros2_sphero_mini
+
 source install/setup.bash
 
 ## References
