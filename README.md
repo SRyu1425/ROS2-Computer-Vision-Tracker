@@ -55,4 +55,4 @@ cd ~/ros2_ws && colcon build --packages-select ros2_sphero_mini
 source install/setup.bash
 
 ## References
-ROS1 Sphero Mini: cedricgoubard/sphero_mini
+ROS1 Sphero Mini BLE Driver: cedricgoubard/sphero_mini
