@@ -35,9 +35,11 @@ GUI -> Control -> BLE -> Sphero
 ## Quick Setup
 
 **System (example for Jazzy)**
+
 sudo apt-get install ros-jazzy-usb-cam ros-jazzy-cv-bridge python3-tk python3-venv python3-dev
 
 **BLE venv (bluepy)**
+
 mkdir -p ~/ros2_ble_ws && cd ~/ros2_ble_ws
 
 python3 -m venv venv && source venv/bin/activate
@@ -47,6 +49,7 @@ pip install --upgrade pip bluepy opencv-python "numpy<2"
 touch venv/COLCON_IGNORE
 
 **Build package**
+
 cd ~/ros2_ws && colcon build --packages-select ros2_sphero_mini
 
 source install/setup.bash
