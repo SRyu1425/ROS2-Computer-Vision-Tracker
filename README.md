@@ -57,5 +57,11 @@ source install/setup.bash
 ## Demo
 The attched mp4 video files demonstrates both the tracking functionality with the GUI in view, as well as the manual teleoperation mode.
 
+https://github.com/user-attachments/assets/df37e395-8034-4170-8d51-2df8a4d3fa40
+
+https://github.com/user-attachments/assets/1a8a31cf-1cca-437b-82ee-702d0a933ae6
+
+https://github.com/user-attachments/assets/3e56045b-0b91-48ab-8174-b7bedba128bc
+
 ## References
 ROS1 Sphero Mini BLE Driver: cedricgoubard/sphero_mini
